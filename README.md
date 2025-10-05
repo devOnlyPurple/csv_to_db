@@ -146,9 +146,7 @@ Look for these labels in our issues:
 ```
 POST /api/v1/
 Content-Type: application/json
-```
 
-```
 {
     "success": true,
     "message": "Welcome to CSV to DB API",
@@ -177,6 +175,11 @@ Content-Type: application/json
 ```
 POST /api/v1/upload
 Content-Type: multipart/form-data
+{
+    "success": true,
+    "tableName": "projet4",
+    "rows": 23
+}
 ```
 
 #### Export SQL
@@ -184,6 +187,11 @@ Content-Type: multipart/form-data
 ```
 POST /api/v1/:tableName/export
 Content-Type: application/json
+
+{
+    "success": true,
+    "downloadUrl": "http://localhost:3000/api/v1/tables/download/projet4.sql"
+}
 ```
 
 ````

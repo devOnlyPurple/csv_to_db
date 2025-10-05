@@ -8,11 +8,11 @@
 
 This project is a Node.js application that converts CSV files into database tables. It provides an easy way to:
 
-- Upload CSV files
-- Convert them to SQL database tables
-- Generate SQL scripts
-- Handle data type detection
-- Manage column mappings
+- Upload CSV file
+- Store CSV data as JSON on the server (data/db.json)
+- Generate SQL scripts from the JSON data (data/sql/db.sql)
+- Provide a direct download link for the generated SQL file
+- Handle basic data type detection and column cleaning
 
 Perfect for developers who need to migrate data from spreadsheets to databases!
 
@@ -20,10 +20,10 @@ Perfect for developers who need to migrate data from spreadsheets to databases!
 
 - Node.js
 - Express.js
-- TypeScript
-- SQLite (for development)
+- Multer
 - CSV-Parse
-- Jest (for testing)
+- fs-extra
+<!-- - Jest (for testing) -->
 
 ## 🚀 Getting Started
 
@@ -38,7 +38,7 @@ Perfect for developers who need to migrate data from spreadsheets to databases!
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/csv-to-db.git
+git clone https://github.com/devOnlyPurple/csv_to_db.git
 ```
 
 2. Install NPM packages
@@ -48,13 +48,7 @@ cd csv-to-db
 npm install
 ```
 
-3. Create your environment file
-
-```bash
-cp .env.example .env
-```
-
-4. Start the development server
+3. Start the development server
 
 ```bash
 npm run dev
@@ -63,16 +57,22 @@ npm run dev
 ## 📊 Project Structure
 
 ```
-csv-to-db/
-├── src/
-│   ├── controllers/    # Request handlers
-│   ├── services/       # Business logic
-│   ├── models/         # Data models
-│   ├── utils/          # Helper functions
-│   └── routes/         # API routes
-├── tests/             # Test files
-├── config/            # Configuration files
-└── uploads/           # Temporary CSV storage
+csv_to_db/
+├─ data/
+│  ├─ db.json             # Données JSON générées depuis CSV
+│  └─ sql/
+│     └─ db.sql           # Fichiers SQL générés
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ src/
+│  ├─ app.js              # Point d’entrée de l’application
+│  ├─ routes/
+│  │  └─ table_routes.js  # Routes pour gérer CSV et SQL
+│  └─ utils/
+│     └─ csv_utils.js     # Fonctions utilitaires pour parser CSV et générer SQL
+└─ uploads/               # Dossier pour stocker les CSV uploadés
+
 ```
 
 ## 🔥 Features
@@ -117,7 +117,6 @@ git push origin feature/AmazingFeature
 
 #### Code Style
 
-- Use TypeScript for new features
 - Follow ESLint configuration
 - Write meaningful commit messages
 - Add tests for new features
@@ -142,6 +141,37 @@ Look for these labels in our issues:
 
 ### Endpoints
 
+#### Endpoint list
+
+```
+POST /api/v1/
+Content-Type: application/json
+```
+
+```
+{
+    "success": true,
+    "message": "Welcome to CSV to DB API",
+    "data": [
+        {
+            "method": "POST",
+            "path": "/api/v1/tables/upload",
+            "description": "Upload a CSV file"
+        },
+        {
+            "method": "GET",
+            "path": "/api/v1/tables/:tableName",
+            "description": "Get table data"
+        },
+        {
+            "method": "DELETE",
+            "path": "/api/v1/tables/:tableName",
+            "description": "Delete a table"
+        }
+    ]
+}
+```
+
 #### Upload CSV
 
 ```
@@ -149,33 +179,14 @@ POST /api/v1/upload
 Content-Type: multipart/form-data
 ```
 
-#### Generate SQL
+#### Export SQL
 
 ```
-POST /api/v1/generate
+POST /api/v1/:tableName/export
 Content-Type: application/json
 ```
 
-#### Get Mapping Suggestion
-
-```
-GET /api/v1/mapping/:fileId
-```
-
-Full API documentation available in `/docs` directory.
-
-## 🧪 Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run specific test file
-npm test -- tests/upload.test.ts
-
-# Run with coverage
-npm run test:coverage
-```
+````
 
 ## 📈 Development
 
@@ -185,7 +196,7 @@ npm run test:coverage
 
 ```bash
 npm install --save-dev
-```
+````
 
 2. Set up pre-commit hooks
 

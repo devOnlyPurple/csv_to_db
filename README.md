@@ -160,11 +160,6 @@ Content-Type: application/json
             "method": "GET",
             "path": "/api/v1/tables/:tableName",
             "description": "Get table data"
-        },
-        {
-            "method": "DELETE",
-            "path": "/api/v1/tables/:tableName",
-            "description": "Delete a table"
         }
     ]
 }
@@ -194,49 +189,7 @@ Content-Type: application/json
 }
 ```
 
-````
-
-## 📈 Development
-
-### Setting Up Development Environment
-
-1. Install development dependencies
-
-```bash
-npm install --save-dev
-````
-
-2. Set up pre-commit hooks
-
-```bash
-npm run prepare
 ```
-
-### Debug Mode
-
-```bash
-npm run dev:debug
-```
-
-Then attach your debugger to port 9229.
-
-## 🔄 CI/CD
-
-We use GitHub Actions for:
-
-- Running tests
-- Linting
-- Building
-- Publishing to npm
-
-Check `.github/workflows` for details.
-
-## 📚 Documentation
-
-- [API Documentation](docs/API.md)
-- [Contributing Guide](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-
 ## 🎯 Hacktoberfest 2025
 
 This project is participating in Hacktoberfest 2025! We welcome contributions from developers of all skill levels.
@@ -255,10 +208,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📫 Contact
 
-Project Link: [https://github.com/yourusername/csv-to-db](https://github.com/yourusername/csv-to-db)
+Project Link: https://github.com/devOnlyPurple/csv_to_db
 
 ## 🙏 Acknowledgments
 
 - [Choose an Open Source License](https://choosealicense.com)
 - [Img Shields](https://shields.io)
-- [GitHub Pages](https://pages.github.com)
+```

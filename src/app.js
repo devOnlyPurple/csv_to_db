@@ -15,6 +15,11 @@ app.get("/api/v1/", (req, res) => {
     message: "Welcome to CSV to DB API",
     data: [
       {
+        method: "GET",
+        path: "/api/v1/",
+        description: "Endpoints list",
+      },
+      {
         method: "POST",
         path: "/api/v1/tables/upload",
         description: "Upload a CSV file",

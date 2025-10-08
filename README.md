@@ -1,3 +1,5 @@
+[Français ![French](image.png)](README.fr.md)
+
 # CSV to Database Converter 🚀
 
 [![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2025-brightgreen)](https://hacktoberfest.com)

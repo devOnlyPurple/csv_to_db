@@ -1,4 +1,4 @@
-[Français](README.fr.md)
+[Français ![French](image.png)](README.fr.md)
 
 # CSV to Database Converter 🚀
 

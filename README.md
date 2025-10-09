@@ -3,6 +3,9 @@
 [![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2025-brightgreen)](https://hacktoberfest.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+[![Issues](https://img.shields.io/github/issues/dev-akw/csv_to_db)](https://github.com/dev-akw/csv_to_db/issues)
+[![Contributors](https://img.shields.io/github/contributors/dev-akw/csv_to_db)](https://github.com/dev-akw/csv_to_db/graphs/contributors)
 
 ## 📖 About The Project
 
@@ -20,41 +23,367 @@ Perfect for developers who need to migrate data from spreadsheets to databases!
 
 - Node.js
 - Express.js
-- Multer
-- CSV-Parse
-- fs-extra
-<!-- - Jest (for testing) -->
+- Multer (file upload)
+- CSV-Parse (CSV parsing)
+- fs-extra (enhanced file system)
 
-## 🚀 Getting Started
+## 📁 Gestion automatique des dossiers
 
-### Prerequisites
+Cette application crée automatiquement les dossiers nécessaires au démarrage :
 
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-- Git
+### Dossiers générés automatiquement :
+- `uploads/` - Fichiers CSV uploadés temporairement
+- `data/` - Données JSON des tables créées
+- `data/sql/` - Fichiers SQL générés
+- `logs/` - Fichiers de logs quotidiens
 
-### Installation
+### Scripts utilitaires :
 
-1. Clone the repository
-
+#### Script de gestion des dossiers :
 ```bash
-git clone https://github.com/devOnlyPurple/csv_to_db.git
+# Voir l'aide
+./manage-folders.sh help
+
+# Créer les dossiers si manquants
+./manage-folders.sh setup
+
+# Nettoyer le contenu (garder la structure)
+./manage-folders.sh clean
+
+# Réinitialiser complètement
+./manage-folders.sh reset
+
+# Voir l'état actuel
+./manage-folders.sh status
+
+# Voir la taille occupée
+./manage-folders.sh size
 ```
 
-2. Install NPM packages
-
+#### Commandes manuelles :
 ```bash
-cd csv-to-db
+# Nettoyer les fichiers temporaires
+rm -rf uploads/* data/*.json data/sql/*.sql
+
+# Vérifier l'espace utilisé
+du -sh uploads/ data/ logs/
+
+# Consulter les logs en temps réel
+tail -f logs/csv_to_db_$(date +%Y-%m-%d).log
+```
+
+### Configuration Git :
+Ces dossiers sont automatiquement ignorés par Git (voir `.gitignore`) car ils contiennent :
+- ❌ Des données utilisateur spécifiques
+- ❌ Des fichiers temporaires
+- ❌ Des logs de développement
+- ✅ Chaque utilisateur aura ses propres dossiers
+
+### Avantages :
+- 🔄 **Auto-création** : Les dossiers se créent au premier démarrage
+- 🛡️ **Sécurité** : Pas de données sensibles sur Git
+- 🧹 **Maintenance facile** : Scripts de nettoyage intégrés
+- 📊 **Monitoring** : Logs organisés par date
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+- Node.js (v14 ou supérieur)
+- npm ou yarn
+
+### Installation
+```bash
 npm install
 ```
 
-3. Start the development server
-
+### Démarrage
 ```bash
 npm run dev
 ```
 
-## 📊 Project Structure
+L'API sera disponible sur `http://localhost:3000`
+
+## 📚 API Endpoints
+
+### Base URL
+```
+http://localhost:3000/api/v1
+```
+
+### Endpoints disponibles
+
+#### Accueil
+```http
+GET /
+```
+**Description:** Documentation de l'API
+**Réponse:**
+```json
+{
+  "success": true,
+  "message": "Welcome to CSV to DB API",
+  "data": [...]
+}
+```
+
+#### Upload CSV
+```http
+POST /tables/upload
+Content-Type: multipart/form-data
+
+FormData:
+- file: [CSV file]
+- tableName: "my_table" (optional)
+```
+
+**Réponse:**
+```json
+{
+  "success": true,
+  "tableName": "my_table",
+  "rows": 150
+}
+```
+
+#### Récupérer les données d'une table
+```http
+GET /tables/:tableName
+```
+
+**Réponse:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "column1": "value1",
+      "column2": "value2"
+    }
+  ]
+}
+```
+
+#### Exporter une table en SQL
+```http
+GET /tables/:tableName/export
+```
+
+**Réponse:**
+```json
+{
+  "success": true,
+  "downloadUrl": "http://localhost:3000/api/v1/tables/download/my_table.sql"
+}
+```
+
+#### Télécharger le fichier SQL généré
+```http
+GET /tables/download/:fileName
+```
+
+## 🤝 Contributing
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+[![Open Issues](https://img.shields.io/github/issues/dev-akw/csv_to_db)](https://github.com/dev-akw/csv_to_db/issues)
+
+### Comment contribuer ?
+
+Ce projet participe à **Hacktoberfest 2025** ! Vous pouvez contribuer de plusieurs façons :
+
+#### 🎯 Issues étiquetées pour débutants
+- [`good first issue`](https://github.com/dev-akw/csv_to_db/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) - Parfait pour commencer
+- [`help wanted`](https://github.com/dev-akw/csv_to_db/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) - Besoin d'aide
+- [`enhancement`](https://github.com/dev-akw/csv_to_db/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) - Améliorations
+
+#### 🚀 Types de contributions acceptées
+
+1. **🐛 Bug Fixes**
+   - Correction de bugs existants
+   - Amélioration des messages d'erreur
+   - Gestion des cas limites
+
+2. **✨ Nouvelles fonctionnalités**
+   - Support de nouveaux formats de fichiers
+   - Amélioration de l'interface utilisateur
+   - Nouveaux endpoints API
+
+3. **📚 Documentation**
+   - Amélioration du README
+   - Ajout d'exemples d'utilisation
+   - Documentation des fonctions
+
+4. **🧪 Tests**
+   - Tests unitaires
+   - Tests d'intégration
+   - Tests end-to-end
+
+5. **🎨 Améliorations UX/UI**
+   - Interface web pour l'API
+   - Amélioration des messages de réponse
+   - Validation côté client
+
+#### 📋 Processus de contribution
+
+1. **Fork** le projet
+2. **Créez** une branche feature (`git checkout -b feature/AmazingFeature`)
+3. **Committez** vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. **Pushez** vers la branche (`git push origin feature/AmazingFeature`)
+5. **Ouvrez** une Pull Request
+
+#### 🔧 Développement local
+
+```bash
+# 1. Fork et clone le projet
+git clone https://github.com/VOTRE_USERNAME/csv_to_db.git
+cd csv_to_db
+
+# 2. Installer les dépendances
+npm install
+
+# 3. Lancer les tests
+npm test
+
+# 4. Démarrer en mode développement
+npm run dev
+
+# 5. Vérifier le linting
+npm run lint
+```
+
+#### ✅ Standards de qualité
+
+- **Tests** : Tous les nouveaux features doivent avoir des tests
+- **Linting** : Le code doit passer ESLint
+- **Documentation** : Mettre à jour le README si nécessaire
+- **Commits** : Messages de commit clairs et concis
+
+#### 🎉 Récompenses
+
+- **Hacktoberfest** : 4 PRs acceptées = T-shirt + goodies
+- **Contribution** : Votre nom dans les contributors
+- **Apprentissage** : Experience réelle de développement open source
+
+## 🧪 Tests
+
+```bash
+# Lancer tous les tests
+npm test
+
+# Tests en mode watch
+npm run test:watch
+
+# Coverage des tests
+npm run test:coverage
+```
+
+## 📋 Todo / Améliorations
+
+- [ ] Interface web pour l'API
+- [ ] Support des fichiers Excel (.xlsx)
+- [ ] Validation plus poussée des CSV
+- [ ] Export vers d'autres formats (JSON, XML)
+- [ ] Tests end-to-end automatisés
+- [ ] Documentation API avec Swagger/OpenAPI
+- [ ] Support multilingue
+- [ ] Configuration via variables d'environnement
+
+## 📄 License
+
+Distribué sous licence MIT. Voir `LICENSE` pour plus d'informations.
+
+## 👥 Authors
+
+- **devOnlyPurple** - *Initial work*
+
+## 🙏 Acknowledgments
+
+- Hacktoberfest pour encourager les contributions open source
+- La communauté Node.js pour les excellents packages
+- Tous les contributeurs qui améliorent ce projet
+
+---
+
+⭐ **Si ce projet vous plaît, n'oubliez pas de lui donner une étoile !**
+
+[🌟 Star this repo](https://github.com/dev-akw/csv_to_db)
+
+## 📁 Gestion automatique des dossiers
+
+Cette application crée automatiquement les dossiers nécessaires au démarrage :
+
+### Dossiers générés automatiquement :
+- `uploads/` - Fichiers CSV uploadés temporairement
+- `data/` - Données JSON des tables créées
+- `data/sql/` - Fichiers SQL générés
+- `logs/` - Fichiers de logs quotidiens
+
+### Scripts utilitaires :
+
+#### Script de gestion des dossiers :
+```bash
+# Voir l'aide
+./manage-folders.sh help
+
+# Créer les dossiers si manquants
+./manage-folders.sh setup
+
+# Nettoyer le contenu (garder la structure)
+./manage-folders.sh clean
+
+# Réinitialiser complètement
+./manage-folders.sh reset
+
+# Voir l'état actuel
+./manage-folders.sh status
+
+# Voir la taille occupée
+./manage-folders.sh size
+```
+
+#### Commandes manuelles :
+```bash
+# Nettoyer les fichiers temporaires
+rm -rf uploads/* data/*.json data/sql/*.sql
+
+# Vérifier l'espace utilisé
+du -sh uploads/ data/ logs/
+
+# Consulter les logs en temps réel
+tail -f logs/csv_to_db_$(date +%Y-%m-%d).log
+```
+
+### Configuration Git :
+Ces dossiers sont automatiquement ignorés par Git (voir `.gitignore`) car ils contiennent :
+- ❌ Des données utilisateur spécifiques
+- ❌ Des fichiers temporaires
+- ❌ Des logs de développement
+- ✅ Chaque utilisateur aura ses propres dossiers
+
+### Avantages :
+- 🔄 **Auto-création** : Les dossiers se créent au premier démarrage
+- 🛡️ **Sécurité** : Pas de données sensibles sur Git
+- 🧹 **Maintenance facile** : Scripts de nettoyage intégrés
+- 📊 **Monitoring** : Logs organisés par date
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+- Node.js (v14 ou supérieur)
+- npm ou yarn
+
+### Installation
+```bash
+npm install
+```
+
+### Démarrage
+```bash
+npm run dev
+```
+
+L'API sera disponible sur `http://localhost:3000`
+
+## 📚 API Endpoints
 
 ```
 csv_to_db/
@@ -144,7 +473,7 @@ Look for these labels in our issues:
 #### Endpoint list
 
 ```
-POST /api/v1/
+GET /api/v1/
 Content-Type: application/json
 
 {

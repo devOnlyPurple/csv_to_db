@@ -1,21 +1,44 @@
 {
   "name": "csv_to_db",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node.js application that converts CSV files into database tables",
   "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["csv", "database", "sql", "converter", "nodejs"],
+  "author": "devOnlyPurple",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "csv-parser": "^3.2.0",
     "express": "^5.1.0",
     "fs-extra": "^11.3.2",
     "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1",
+    "eslint": "^8.50.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"],
+    "testTimeout": 10000,
+    "forceExit": true,
+    "detectOpenHandles": true,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/app.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"]
   }
 }

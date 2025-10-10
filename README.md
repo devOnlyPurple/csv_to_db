@@ -1,219 +1,306 @@
-[Français ![French](image.png)](README.fr.md)
+# Convertisseur CSV vers Base de Données 🚀
 
-# CSV to Database Converter 🚀
+> 🇺🇸 [English version available](./README.md)
 
 [![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2025-brightgreen)](https://hacktoberfest.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+[![Issues](https://img.shields.io/github/issues/dev-akw/csv_to_db)](https://github.com/dev-akw/csv_to_db/issues)
+[![Contributors](https://img.shields.io/github/contributors/dev-akw/csv_to_db)](https://github.com/dev-akw/csv_to_db/graphs/contributors)
 
-## 📖 About The Project
+## 📖 À propos du projet
 
-This project is a Node.js application that converts CSV files into database tables. It provides an easy way to:
+Ce projet est une application Node.js qui convertit les fichiers CSV en tables de base de données. Il offre un moyen simple de :
 
-- Upload CSV file
-- Store CSV data as JSON on the server (data/db.json)
-- Generate SQL scripts from the JSON data (data/sql/db.sql)
-- Provide a direct download link for the generated SQL file
-- Handle basic data type detection and column cleaning
+- Importer des fichiers CSV
+- Stocker les données CSV en JSON sur le serveur (data/db.json)
+- Générer des scripts SQL à partir des données JSON (data/sql/db.sql)
+- Fournir un lien de téléchargement direct pour le fichier SQL généré
+- Gérer la détection automatique des types de données et le nettoyage des colonnes
 
-Perfect for developers who need to migrate data from spreadsheets to databases!
+Parfait pour les développeurs qui ont besoin de migrer des données depuis des feuilles de calcul vers des bases de données !
 
-## 🛠️ Built With
+## 🛠️ Technologies utilisées
 
 - Node.js
 - Express.js
-- Multer
-- CSV-Parse
-- fs-extra
-<!-- - Jest (for testing) -->
+- Multer (upload de fichiers)
+- CSV-Parse (analyse CSV)
+- fs-extra (système de fichiers avancé)
 
-## 🚀 Getting Started
+## 🚀 Démarrage rapide
 
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-- Git
+### Prérequis
+- Node.js (v14 ou supérieur)
+- npm ou yarn
 
 ### Installation
-
-1. Clone the repository
-
 ```bash
-git clone https://github.com/devOnlyPurple/csv_to_db.git
-```
-
-2. Install NPM packages
-
-```bash
-cd csv-to-db
 npm install
 ```
 
-3. Start the development server
-
+### Démarrage
 ```bash
 npm run dev
 ```
 
-## 📊 Project Structure
+L'API sera disponible sur `http://localhost:3000`
 
-```
-csv_to_db/
-├─ data/
-│  ├─ db.json             # Données JSON générées depuis CSV
-│  └─ sql/
-│     └─ db.sql           # Fichiers SQL générés
-├─ package-lock.json
-├─ package.json
-├─ README.md
-├─ src/
-│  ├─ app.js              # Point d’entrée de l’application
-│  ├─ routes/
-│  │  └─ table_routes.js  # Routes pour gérer CSV et SQL
-│  └─ utils/
-│     └─ csv_utils.js     # Fonctions utilitaires pour parser CSV et générer SQL
-└─ uploads/               # Dossier pour stocker les CSV uploadés
+## 🧪 Guide de test rapide
 
-```
+### 🎯 Test rapide avec curl
 
-## 🔥 Features
-
-- [x] CSV file upload
-- [x] Automatic data type detection
-- [x] SQL script generation
-- [x] Column mapping configuration
-- [x] Basic data validation
-- [ ] Multiple database support
-- [ ] Custom data transformations
-- [ ] Batch processing
-
-## 🤝 Contributing
-
-We love contributions! Here's how you can help:
-
-### Getting Started with Contributions
-
-1. Fork the Project
-2. Create your Feature Branch
-
+#### 1. Vérifier que l'API fonctionne
 ```bash
-git checkout -b feature/AmazingFeature
+curl http://localhost:3000/api/v1/
 ```
 
-3. Commit your Changes
-
+#### 2. Créer un fichier CSV de test
 ```bash
-git commit -m 'Add some AmazingFeature'
+cat > produits_test.csv << 'EOF'
+produit,prix,categorie
+Ordinateur Portable,999,Electronique
+Smartphone,599,Electronique
+Tablette,349,Electronique
+EOF
 ```
 
-4. Push to the Branch
-
+#### 3. Importer le CSV
 ```bash
-git push origin feature/AmazingFeature
+curl -X POST http://localhost:3000/api/v1/tables/upload \
+  -F "file=@produits_test.csv" \
+  -F "tableName=produits"
 ```
 
-5. Open a Pull Request
-
-### Contribution Guidelines
-
-#### Code Style
-
-- Follow ESLint configuration
-- Write meaningful commit messages
-- Add tests for new features
-
-#### Pull Request Process
-
-1. Update the README.md with details of changes
-2. Update the CHANGELOG.md following semantic versioning
-3. Link any related issues
-4. Request review from maintainers
-
-### Good First Issues
-
-Look for these labels in our issues:
-
-- `good first issue`
-- `help wanted`
-- `hacktoberfest`
-- `documentation`
-
-## 📝 API Documentation
-
-### Endpoints
-
-#### Endpoint list
-
+#### 4. Récupérer les données
+```bash
+curl http://localhost:3000/api/v1/tables/produits
 ```
-POST /api/v1/
-Content-Type: application/json
 
-{
-    "success": true,
-    "message": "Welcome to CSV to DB API",
-    "data": [
-        {
-            "method": "POST",
-            "path": "/api/v1/tables/upload",
-            "description": "Upload a CSV file"
-        },
-        {
-            "method": "GET",
-            "path": "/api/v1/tables/:tableName",
-            "description": "Get table data"
+#### 5. Exporter en SQL
+```bash
+curl http://localhost:3000/api/v1/tables/produits/export
+```
+
+#### 6. Télécharger le fichier SQL généré
+```bash
+curl -O -J http://localhost:3000/api/v1/tables/download/produits.sql
+```
+
+### 🎨 Test avec interface web simple
+
+Créez un fichier `test.html` :
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Upload CSV</title>
+</head>
+<body>
+    <h2>Test de l'API CSV vers DB</h2>
+
+    <h3>1. Upload CSV</h3>
+    <form action="http://localhost:3000/api/v1/tables/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" required>
+        <input type="text" name="tableName" placeholder="Nom de la table" value="table_test">
+        <button type="submit">Uploader</button>
+    </form>
+
+    <h3>2. Voir les données</h3>
+    <p>Table : <input type="text" id="tableName" value="table_test">
+    <button onclick="getData()">Récupérer données</button></p>
+
+    <h3>3. Résultats</h3>
+    <div id="results"></div>
+
+    <script>
+        async function getData() {
+            const tableName = document.getElementById('tableName').value;
+            const response = await fetch(`http://localhost:3000/api/v1/tables/${tableName}`);
+            const data = await response.json();
+
+            document.getElementById('results').innerHTML =
+                '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
         }
-    ]
+    </script>
+</body>
+</html>
+```
+
+Puis ouvrez `test.html` dans votre navigateur.
+
+## 📚 Endpoints de l'API
+
+### URL de base
+```
+http://localhost:3000/api/v1
+```
+
+### Endpoints disponibles
+
+#### Accueil
+```http
+GET /
+```
+**Description :** Documentation de l'API
+**Réponse :**
+```json
+{
+  "success": true,
+  "message": "Welcome to CSV to DB API",
+  "data": [...]
 }
 ```
 
 #### Upload CSV
-
-```
-POST /api/v1/upload
+```http
+POST /tables/upload
 Content-Type: multipart/form-data
+
+FormData:
+- file: [fichier CSV]
+- tableName: "ma_table" (optionnel)
+```
+
+**Réponse :**
+```json
 {
-    "success": true,
-    "tableName": "projet4",
-    "rows": 23
+  "success": true,
+  "tableName": "ma_table",
+  "rows": 150
 }
 ```
 
-#### Export SQL
-
+#### Récupérer les données d'une table
+```http
+GET /tables/:tableName
 ```
-POST /api/v1/:tableName/export
-Content-Type: application/json
 
+**Réponse :**
+```json
 {
-    "success": true,
-    "downloadUrl": "http://localhost:3000/api/v1/tables/download/projet4.sql"
+  "success": true,
+  "data": [
+    {
+      "colonne1": "valeur1",
+      "colonne2": "valeur2"
+    }
+  ]
 }
 ```
 
+#### Exporter une table en SQL
+```http
+GET /tables/:tableName/export
 ```
-## 🎯 Hacktoberfest 2025
 
-This project is participating in Hacktoberfest 2025! We welcome contributions from developers of all skill levels.
-
-### How to Participate
-
-1. Register at [Hacktoberfest](https://hacktoberfest.com)
-2. Pick an issue labeled `hacktoberfest`
-3. Follow our contribution guidelines
-4. Submit your PR
-5. Get it merged!
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📫 Contact
-
-Project Link: https://github.com/devOnlyPurple/csv_to_db
-
-## 🙏 Acknowledgments
-
-- [Choose an Open Source License](https://choosealicense.com)
-- [Img Shields](https://shields.io)
+**Réponse :**
+```json
+{
+  "success": true,
+  "downloadUrl": "http://localhost:3000/api/v1/tables/download/ma_table.sql"
+}
 ```
+
+## 🤝 Contribuer
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://makeapullrequest.com)
+[![Open Issues](https://img.shields.io/github/issues/dev-akw/csv_to_db)](https://github.com/dev-akw/csv_to_db/issues)
+
+### Comment contribuer ?
+
+Ce projet participe à **Hacktoberfest 2025** ! Vous pouvez contribuer de plusieurs façons :
+
+#### 🎯 Issues étiquetées pour débutants
+- [`good first issue`](https://github.com/dev-akw/csv_to_db/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) - Parfait pour commencer
+- [`help wanted`](https://github.com/dev-akw/csv_to_db/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) - Besoin d'aide
+- [`enhancement`](https://github.com/dev-akw/csv_to_db/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) - Améliorations
+
+#### 🚀 Types de contributions acceptées
+
+1. **🐛 Corrections de bugs**
+   - Correction de bugs existants
+   - Amélioration des messages d'erreur
+   - Gestion des cas limites
+
+2. **✨ Nouvelles fonctionnalités**
+   - Support de nouveaux formats de fichiers
+   - Amélioration de l'interface utilisateur
+   - Nouveaux endpoints API
+
+3. **📚 Documentation**
+   - Amélioration du README
+   - Ajout d'exemples d'utilisation
+   - Documentation des fonctions
+
+4. **🧪 Tests**
+   - Tests unitaires
+   - Tests d'intégration
+   - Tests end-to-end
+
+5. **🎨 Améliorations UX/UI**
+   - Interface web pour l'API
+   - Amélioration des messages de réponse
+   - Validation côté client
+
+## 📁 Gestion automatique des dossiers
+
+Cette application crée automatiquement les dossiers nécessaires au démarrage :
+
+### Dossiers générés automatiquement :
+- `uploads/` - Fichiers CSV importés temporairement
+- `data/` - Données JSON des tables créées
+- `data/sql/` - Fichiers SQL générés
+- `logs/` - Fichiers de logs quotidiens
+
+### Avantages :
+- 🔄 **Auto-création** : Les dossiers se créent au premier démarrage
+- 🛡️ **Sécurité** : Pas de données sensibles sur Git
+- 🧹 **Maintenance facile** : Scripts de nettoyage intégrés
+- 📊 **Monitoring** : Logs organisés par date
+
+## 🧪 Tests
+
+```bash
+# Lancer tous les tests
+npm test
+
+# Tests en mode watch
+npm run test:watch
+
+# Coverage des tests
+npm run test:coverage
+```
+
+## 📋 Améliorations prévues
+
+- [ ] Interface web pour l'API
+- [ ] Support des fichiers Excel (.xlsx)
+- [ ] Validation plus poussée des CSV
+- [ ] Export vers d'autres formats (JSON, XML)
+- [ ] Tests end-to-end automatisés
+- [ ] Documentation API avec Swagger/OpenAPI
+- [ ] Support multilingue
+- [ ] Configuration via variables d'environnement
+
+## 📄 Licence
+
+Distribué sous licence MIT. Voir `LICENSE` pour plus d'informations.
+
+## 👥 Auteurs
+
+- **devOnlyPurple** - *Travail initial*
+
+## 🙏 Remerciements
+
+- Hacktoberfest pour encourager les contributions open source
+- La communauté Node.js pour les excellents packages
+- Tous les contributeurs qui améliorent ce projet
+
+---
+
+⭐ **Si ce projet vous plaît, n'oubliez pas de lui donner une étoile !**
+
+[🌟 Star this repo](https://github.com/dev-akw/csv_to_db)

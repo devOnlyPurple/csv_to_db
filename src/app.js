@@ -1,4 +1,6 @@
 const express = require("express");
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 const tableRoutes = require("./routes/table_routes");
 const logsRoutes = require("./routes/logs_routes");
 const { errorHandler, notFound } = require("./middleware/errorHandler");
@@ -8,8 +10,142 @@ const path = require("path");
 const fs = require("fs-extra");
 const app = express();
 
+// Configuration Swagger/OpenAPI
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'CSV to DB API',
+      version: '1.0.0',
+      description: 'API REST pour télécharger des fichiers CSV, créer des tables SQLite et exporter des données en SQL. Cette API permet de gérer facilement vos données CSV et de les transformer en bases de données.',
+      contact: {
+        name: 'Support API',
+        url: 'https://github.com/devOnlyPurple/csv_to_db',
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT',
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Serveur de développement',
+      },
+      {
+        url: 'http://localhost:3000',
+        description: 'Serveur de production',
+      },
+    ],
+    tags: [
+      {
+        name: 'Tables',
+        description: 'Opérations sur les tables et fichiers CSV',
+      },
+      {
+        name: 'Logs',
+        description: 'Gestion et consultation des logs système',
+      },
+    ],
+    components: {
+      schemas: {
+        SuccessResponse: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: true,
+            },
+            message: {
+              type: 'string',
+              example: 'Operation completed successfully',
+            },
+            data: {
+              type: 'object',
+            },
+          },
+        },
+        ErrorResponse: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              example: false,
+            },
+            message: {
+              type: 'string',
+              example: 'An error occurred',
+            },
+            error: {
+              type: 'string',
+            },
+          },
+        },
+        TableData: {
+          type: 'object',
+          properties: {
+            tableName: {
+              type: 'string',
+              example: 'users',
+            },
+            columns: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+              example: ['id', 'name', 'email'],
+            },
+            rows: {
+              type: 'array',
+              items: {
+                type: 'object',
+              },
+            },
+            rowCount: {
+              type: 'integer',
+              example: 100,
+            },
+          },
+        },
+        LogEntry: {
+          type: 'object',
+          properties: {
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              example: '2025-10-12T10:30:00.000Z',
+            },
+            level: {
+              type: 'string',
+              enum: ['INFO', 'SUCCESS', 'WARNING', 'ERROR'],
+              example: 'INFO',
+            },
+            module: {
+              type: 'string',
+              example: 'CSV_SERVICE',
+            },
+            message: {
+              type: 'string',
+              example: 'CSV file uploaded successfully',
+            },
+          },
+        },
+      },
+    },
+  },
+  apis: ['./src/routes/*.js'],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
 // Middleware pour parser le JSON
 app.use(express.json());
+
+// Documentation Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'CSV to DB API Documentation',
+}));
 
 // Routes API
 app.use("/api/v1/tables", tableRoutes);

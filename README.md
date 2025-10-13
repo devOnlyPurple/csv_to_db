@@ -50,6 +50,23 @@ npm run dev
 
 L'API sera disponible sur `http://localhost:3000`
 
+## 📚 Documentation API (Swagger/OpenAPI)
+
+Une documentation interactive complète est disponible via Swagger UI :
+
+```
+http://localhost:3000/api-docs/
+```
+
+**Fonctionnalités de la documentation :**
+- 📖 Documentation détaillée de tous les endpoints
+- 🧪 Interface de test intégrée (Try it out)
+- 📋 Exemples de requêtes et réponses
+- 🏷️ Organisation par catégories (Tables, Logs)
+- 📊 Schémas de données réutilisables
+
+Pour plus de détails, consultez le [Guide Swagger complet](./SWAGGER_GUIDE.md).
+
 ## 🧪 Guide de test rapide
 
 ### 🎯 Test rapide avec curl

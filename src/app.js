@@ -151,6 +151,31 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.use("/api/v1/tables", tableRoutes);
 app.use("/api/v1/logs", logsRoutes);
 
+// Route racine pour la page d'accueil
+app.get("/", (req, res) => {
+  logger.info('APP', `Page d'accueil consultée par ${req.ip || 'inconnu'}`);
+  return res.status(200).json({
+    success: true,
+    message: "Welcome to CSV to DB Converter",
+    description: "A Node.js application that converts CSV files into database tables",
+    version: "1.0.0",
+    endpoints: {
+      documentation: "http://localhost:3000/api-docs/",
+      api_root: "http://localhost:3000/api/v1/",
+      upload_csv: "POST http://localhost:3000/api/v1/tables/upload",
+      get_table: "GET http://localhost:3000/api/v1/tables/:tableName",
+      export_sql: "GET http://localhost:3000/api/v1/tables/:tableName/export",
+      download_sql: "GET http://localhost:3000/api/v1/tables/download/:fileName"
+    },
+    quick_start: [
+      "1. Upload a CSV file: POST /api/v1/tables/upload",
+      "2. View data: GET /api/v1/tables/:tableName", 
+      "3. Export to SQL: GET /api/v1/tables/:tableName/export",
+      "4. Download SQL: GET /api/v1/tables/download/:fileName"
+    ]
+  });
+});
+
 // Route racine pour la documentation de l'API
 app.get("/api/v1/", (req, res) => {
   logger.info('APP', `Documentation API consultée par ${req.ip || 'inconnu'}`);
